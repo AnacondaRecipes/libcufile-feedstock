@@ -47,6 +47,9 @@ outputs:
     build:
       missing_dso_whitelist:
         - "*/libcuda.so.*"
+        - "*/libmlx5.so.1"
+        - "*/librdmacm.so.1"
+        - "*/libibverbs.so.1"
     files:
       - lib/libcufile*.so.*
       - targets/{{ target_name }}/lib/libcufile*.so.*
@@ -54,9 +57,9 @@ outputs:
       build:
         - {{ compiler("c") }}
         - {{ compiler("cxx") }}
-        - arm-variant * {{ arm_variant_type }}  # [aarch64]
-        - sysroot_{{ target_platform }} 2.17    # [linux]
-        - {{ cdt("rdma-core-devel") }}          # [linux64]
+        #- arm-variant * {{ arm_variant_type }}  # [aarch64]
+        - sysroot_{{ target_platform }} {{ conda_glibc_ver }}.*    # [linux]
+        #- {{ cdt("rdma-core-devel") }}          # [linux64]
         - patchelf <0.18.0                      # [linux]
       host:
         - cuda-version {{ cuda_version }}
@@ -89,8 +92,8 @@ outputs:
       build:
         - {{ compiler("c") }}
         - {{ compiler("cxx") }}
-        - arm-variant * {{ arm_variant_type }}  # [aarch64]
-        - sysroot_{{ target_platform }} 2.17    # [linux]
+        #- arm-variant * {{ arm_variant_type }}  # [aarch64]
+        - sysroot_{{ target_platform }} {{ conda_glibc_ver }}.*    # [linux]
       host:
         - cuda-version {{ cuda_version }}
       run:
@@ -124,8 +127,8 @@ outputs:
       build:
         - {{ compiler("c") }}
         - {{ compiler("cxx") }}
-        - arm-variant * {{ arm_variant_type }}  # [aarch64]
-        - sysroot_{{ target_platform }} 2.17    # [linux]
+        #- arm-variant * {{ arm_variant_type }}  # [aarch64]
+        - sysroot_{{ target_platform }} {{ conda_glibc_ver }}.*    # [linux]
       host:
         - cuda-version {{ cuda_version }}
       run:
@@ -147,18 +150,22 @@ outputs:
       doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
   - name: gds-tools
+    build:
+      missing_dso_whitelist:
+        - "*/libcuda.so.*"
+        - "*/libnuma.so.1"
     files:
       - gds/tools
     requirements:
       build:
         - {{ compiler("c") }}
         - {{ compiler("cxx") }}
-        - arm-variant * {{ arm_variant_type }}  # [aarch64]
-        - sysroot_{{ target_platform }} 2.17   # [linux]
+        #- arm-variant * {{ arm_variant_type }}  # [aarch64]
+        - sysroot_{{ target_platform }} {{ conda_glibc_ver }}.*   # [linux]
       host:
         - cuda-version {{ cuda_version }}
         - libcufile-dev {{ version }}
-        - libnuma  # [linux]
+        # - libnuma  # [linux]
       run:
         - {{ pin_compatible("cuda-version", max_pin="x.x") }}
         - {{ pin_subpackage("libcufile", max_pin="x") }}

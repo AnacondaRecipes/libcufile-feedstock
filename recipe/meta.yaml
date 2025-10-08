@@ -31,9 +31,6 @@ outputs:
       binary_relocation: false
       missing_dso_whitelist:
         - "*/libcuda.so.*"
-        - "*/libmlx5.so.1"
-        - "*/librdmacm.so.1"
-        - "*/libibverbs.so.1"
     files:
       - lib/libcufile*.so.*
       - targets/{{ target_name }}/lib/libcufile*.so.*
@@ -166,7 +163,7 @@ outputs:
       host:
         - cuda-version {{ cuda_version }}
         - libcufile-dev {{ version }}
-        # - libnuma  # [linux]
+        - libnuma  # [linux]
       run:
         - {{ pin_compatible("cuda-version", max_pin="x.x") }}
         - {{ pin_subpackage("libcufile", max_pin="x") }}

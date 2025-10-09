@@ -41,10 +41,11 @@ outputs:
         - arm-variant * {{ arm_variant_type }}  # [aarch64]
         - {{ stdlib("c") }}
       host:
-        - rdma-core                             # [linux]
+        - rdma-core {{ rdma_core }}             # [linux]
         - cuda-version {{ cuda_version }}
       run:
         - {{ pin_compatible("cuda-version", max_pin="x.x") }}
+        - rdma-core # through run_exports
       run_constrained:
         - arm-variant * {{ arm_variant_type }}  # [aarch64]
     test:

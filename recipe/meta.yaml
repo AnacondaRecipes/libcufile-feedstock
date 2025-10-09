@@ -31,6 +31,13 @@ outputs:
       binary_relocation: false
       missing_dso_whitelist:
         - "*/libcuda.so.*"
+        # rdma-core libraries - displayed as overlinking warnings in conda-build
+        # due to this package being a binary repack.
+        # You can verify libraries are found by installing this package in a conda environment
+        # and then running ldd $CONDA_PREFIX/lib/libcufile_rdma.so.1.13.1
+        - "*/libmlx5.so.*"
+        - "*/librdmacm.so.*"
+        - "*/libibverbs.so.*"
     files:
       - lib/libcufile*.so.*
       - targets/{{ target_name }}/lib/libcufile*.so.*

@@ -31,13 +31,13 @@ outputs:
       binary_relocation: false
       missing_dso_whitelist:
         - "*/libcuda.so.*"
-        # rdma-core libraries - displayed as overlinking warnings in conda-build
-        # due to this package being a binary repack.
-        # You can verify libraries are found by installing this package in a conda environment
-        # and then running ldd $CONDA_PREFIX/lib/libcufile_rdma.so.1.13.1
-        - "*/libmlx5.so.*"
-        - "*/librdmacm.so.*"
-        - "*/libibverbs.so.*"
+        # Needed for rpath issues with conda-build and use of --error-overlinking command-line argument
+        - '$RPATH/libgcc_s.so.1'  # [linux]
+        - '$RPATH/libstdc++.so.6'  # [linux]
+        # rdma-core and supporting libraries, see above comment for `libgcc_s.so.1` and `libstdc++.so.6`
+        - '$RPATH/librdmacm.so.1'  # [linux]
+        - '$RPATH/libibverbs.so.1'  # [linux]
+        - '$RPATH/libmlx5.so.1'  # [linux]
     files:
       - lib/libcufile*.so.*
       - targets/{{ target_name }}/lib/libcufile*.so.*
@@ -48,11 +48,10 @@ outputs:
         - arm-variant * {{ arm_variant_type }}  # [aarch64]
         - {{ stdlib("c") }}
       host:
-        - rdma-core {{ rdma_core }}             # [linux]
+        - rdma-core                             # [linux]
         - cuda-version {{ cuda_version }}
       run:
         - {{ pin_compatible("cuda-version", max_pin="x.x") }}
-        - rdma-core # through run_exports
       run_constrained:
         - arm-variant * {{ arm_variant_type }}  # [aarch64]
     test:
@@ -84,6 +83,7 @@ outputs:
       description: |
         The cuFile library provides a direct data path between GPU memory and storage.
       doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
+      dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
   - name: libcufile-dev
     build:
@@ -126,6 +126,7 @@ outputs:
       description: |
         The cuFile library provides a direct data path between GPU memory and storage.
       doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
+      dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
   - name: libcufile-static
     files:
@@ -155,6 +156,7 @@ outputs:
       description: |
         The cuFile library provides a direct data path between GPU memory and storage.
       doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
+      dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
   - name: gds-tools
     build:
@@ -195,6 +197,7 @@ outputs:
       description: |
         The cuFile library provides a direct data path between GPU memory and storage.
       doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
+      dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
 about:
   home: https://developer.nvidia.com/cuda-toolkit
@@ -205,8 +208,11 @@ about:
   description: |
     The cuFile library provides a direct data path between GPU memory and storage.
   doc_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
+  dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
 extra:
+  skip-lints:
+    - license_file_overspecified
   recipe-maintainers:
     - conda-forge/cuda
   feedstock-name: libcufile

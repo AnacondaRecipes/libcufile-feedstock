@@ -177,7 +177,7 @@ outputs:
       host:
         - cuda-version {{ cuda_version }}
         - libcufile-dev {{ version }}
-        - libnuma  # [linux]
+        - libnuma {{ libnuma }}  # [linux]
       run:
         - {{ pin_compatible("cuda-version", max_pin="x.x") }}
         - {{ pin_subpackage("libcufile", max_pin="x") }}
@@ -217,6 +217,8 @@ about:
   dev_url: https://docs.nvidia.com/gpudirect-storage/api-reference-guide/index.html
 
 extra:
+  skip-lints:
+    - deprecate_license_url
   recipe-maintainers:
     - conda-forge/cuda
   feedstock-name: libcufile
